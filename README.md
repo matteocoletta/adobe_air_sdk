@@ -65,7 +65,7 @@ This is the Adobe AIR SDK of Adjust™. You can read more about Adjust™ at [Ad
    * [Disable tracking](#disable-tracking)
    * [GDPR right to be forgotten](#gdpr-forget-me)
    
-* [License](#license)
+### [License](#license)
 
 ## <a id="example-app"></a>Example app
 
