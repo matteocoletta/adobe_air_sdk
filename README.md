@@ -505,7 +505,7 @@ In addition to the data points that Adjust collects [by default](https://partner
 
 You should use Callback parameters for the values that you collect for your own internal use, and Partner parameters for those that you wish to share with external partners. If a value (e.g. product ID) is tracked both for internal use and to forward it to external partners, the best practice would be to track it both as callback and partner parameter.
 
-### <a id="callback-parameters"></a>Callback parameters
+### <a id="callback-parameters"></a>Event callback parameters
 
 You can also register a callback URL for that event in your [dashboard][dashboard], and we will send a GET request to that URL whenever the event gets tracked. In that case, you can also put some key-value pairs in an object and pass it to the `trackEvent` method. We will then append these named parameters to your callback URL.
 
@@ -530,7 +530,7 @@ It should be mentioned that we support a variety of placeholders like `{idfa}` f
 
 You can read more about using URL callbacks, including a full list of available values, in our [callbacks guide][callbacks-guide].
 
-### <a id="partner-parameters"></a>Partner parameters
+### <a id="partner-parameters"></a>Event partner parameters
 
 You can also add parameters for integrations that have been activated in your Adjust dashboard that can be transmitted to network partners.
 
@@ -616,6 +616,18 @@ config.setDelayStart(5.5);
 In this case, this will make the Adjust SDK not send the initial install session, or any event created, for 5.5 seconds. After this time period, or if you call the method `sendFirstPackages()` of the `Adjust` instance in the meantime, every session parameter will be added to the delayed install session and events, and the Adjust SDK will resume as usual.
 
 **The maximum delay start time of the Adjust SDK is 10 seconds**.
+
+## <a id="additional-feature"></a>Additional features
+
+### <a id="push-token"></a>Push token (Uninstall/Reinstall tracking)
+
+To send us the push notification token, add the following call to Adjust **whenever you get your token in the app or when it gets updated**:
+
+```actionscript
+Adjust.setDeviceToken("YourPushNotificationToken");
+```
+
+Push tokens are used for Audience Builder and client callbacks, and they are required for the upcoming uninstall tracking feature.
 
 ### <a id="attribution-callback"></a>Attribution callback
 
@@ -950,16 +962,6 @@ var attribution:AdjustAttribution = Adjust.getAttribution();
 ```
 
 **Note**: Information about current attribution is available after app installation has been tracked by the Adjust backend and the attribution callback has been initially triggered. From that moment on, the Adjust SDK has information about a user's attribution and you can access it with this method. So, **it is not possible** to access a user's attribution value before the SDK has been initialised and an attribution callback has been triggered.
-
-### <a id="push-token"></a>Push token
-
-To send us the push notification token, add the following call to Adjust **whenever you get your token in the app or when it gets updated**:
-
-```actionscript
-Adjust.setDeviceToken("YourPushNotificationToken");
-```
-
-Push tokens are used for Audience Builder and client callbacks, and they are required for the upcoming uninstall tracking feature.
 
 ### <a id="track-additional-ids"></a>Track additional device identifiers
 
