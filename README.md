@@ -684,6 +684,16 @@ public class Example extends Sprite {
 
 Please make sure to consider [applicable attribution data policies][attribution-data].
 
+### <a id="user-attribution"></a>User attribution
+
+As described in the [attribution callback section](#attribution-callback), this callback is triggered, providing you with information about a new attribution whenever it changes. If you want to access information about a user's current attribution whenever you need it, you can make a call to the following method of the `Adjust` instance:
+
+```actionscript
+var attribution:AdjustAttribution = Adjust.getAttribution();
+```
+
+**Note**: Information about current attribution is available after app installation has been tracked by the Adjust backend and the attribution callback has been initially triggered. From that moment on, the Adjust SDK has information about a user's attribution and you can access it with this method. So, **it is not possible** to access a user's attribution value before the SDK has been initialised and an attribution callback has been triggered.
+
 ### <a id="session-event-callbacks"></a>Session and event callbacks
 
 You can register a callback to be notified of successful and failed tracked events and/or sessions.
@@ -839,74 +849,6 @@ And both event and session failed objects also contain:
 
 - `var willRetry:Boolean;` indicates there will be an attempt to resend the package at a later time.
 
-### <a id="disable-tracking"></a>Disable tracking
-
-You can disable the Adjust SDK from tracking by invoking the method `setEnabled` of the `Adjust` instance with the enabled parameter set as `false`. This setting is **remembered between sessions**, but it can only be activated after the first session.
-
-```actionscript
-Adjust.setEnabled(false);
-```
-
-You can verify if the Adjust SDK is currently active with the method `isEnabled` of the `Adjust` instance. It is always possible to activate the Adjust SDK by invoking `setEnabled` with the `enabled` parameter set to `true`.
-
-### <a id="offline-mode"></a>Offline mode
-
-You can put the Adjust SDK in offline mode to suspend transmission to our servers, while still retaining tracked data to be sent later. While in offline mode, all information is saved in a file, so be careful not to trigger too many events while in offline mode.
-
-You can activate offline mode by calling the method `setOfflineMode` of the `Adjust` instance with the parameter `true`.
-
-```actionscript
-Adjust.setOfflineMode(true);
-```
-
-Conversely, you can deactivate the offline mode by calling `setOfflineMode` with `false`. When the Adjust SDK is put back in online mode, all saved information is sent to our servers with the correct timstamps.
-
-Unlike disabling tracking, this setting is **not remembered between sessions**. This means that the SDK is in online mode whenever it is started, even if the app was terminated in offline mode.
-
-### <a id="event-buffering"></a>Event buffering
-
-If your app makes heavy use of event tracking, you might want to delay some HTTP requests in order to send them in a single batch every minute. You can enable event buffering by calling the method `setEventBufferingEnabled` of the `AdjustConfig` instance with parameter `true`.
-
-```actionscript
-var appToken:String = "{YourAppToken}";
-var environment:String = Environment.SANDBOX;
-      
-var adjustConfig:AdjustConfig = new AdjustConfig(appToken, environment);
-
-adjustConfig.setEventBufferingEnabled(true);
-
-Adjust.start(adjustConfig);
-```
-
-If nothing set, event buffering is **disabled by default**.
-
-### <a id="gdpr-forget-me"></a>GDPR right to be forgotten
-
-In accordance with article 17 of the EU's General Data Protection Regulation (GDPR), you can notify Adjust when a user has exercised their right to be forgotten. Calling the following method will instruct the Adjust SDK to communicate the user's choice to be forgotten to the Adjust backend:
-
-```actionscript
-Adjust.gdprForgetMe();
-```
-
-Upon receiving this information, Adjust will erase the user's data and the Adjust SDK will stop tracking the user. No requests from this device will be sent to Adjust in the future.
-
-### <a id="background-tracking"></a>Background tracking
-
-The default behaviour of the Adjust SDK is to **pause sending HTTP requests while the app is in the background**. You can change this in your `AdjustConfig` instance by calling the `setSendInBackground` method:
-
-```actionscript
-var appToken:String = "{YourAppToken}";
-var environment:String = Environment.SANDBOX;
-      
-var adjustConfig:AdjustConfig = new AdjustConfig(appToken, environment);
-
-adjustConfig.setSendInBackground(true);
-
-Adjust.start(adjustConfig);
-```
-
-If nothing is set, sending in background is **disabled by default**.
-
 ### <a id="device-ids"></a>Device IDs
 
 Certain services (such as Google Analytics) require you to coordinate Device and Client IDs in order to prevent duplicate reporting.
@@ -953,16 +895,6 @@ var adid:String = Adjust.getAdid();
 
 **Note**: Information about the **adid** is available after app installation has been tracked by the Adjust backend. From that moment on, the Adjust SDK has information about the device **adid** and you can access it with this method. So, **it is not possible** to access the **adid** value before the SDK has been initialised and installation of your app has been successfully tracked.
 
-### <a id="user-attribution"></a>User attribution
-
-As described in the [attribution callback section](#attribution-callback), this callback is triggered, providing you with information about a new attribution whenever it changes. If you want to access information about a user's current attribution whenever you need it, you can make a call to the following method of the `Adjust` instance:
-
-```actionscript
-var attribution:AdjustAttribution = Adjust.getAttribution();
-```
-
-**Note**: Information about current attribution is available after app installation has been tracked by the Adjust backend and the attribution callback has been initially triggered. From that moment on, the Adjust SDK has information about a user's attribution and you can access it with this method. So, **it is not possible** to access a user's attribution value before the SDK has been initialised and an attribution callback has been triggered.
-
 ### <a id="track-additional-ids"></a>Track additional device identifiers
 
 If you are distributing your Android app **outside of the Google Play Store** and would like to track additional device identifiers (IMEI and MEID), you need to explicitly instruct the Adjust SDK to do so. You can do that by calling the `setReadMobileEquipmentIdentity` method of the `AdjustConfig` instance. **The Adjust SDK does not collect these identifiers by default**.
@@ -1007,6 +939,75 @@ If you want to use the Adjust SDK to recognize users that found your app pre-ins
     ```
     Default tracker: 'abc123'
     ```
+    
+### <a id="background-tracking"></a>Background tracking
+
+The default behaviour of the Adjust SDK is to **pause sending HTTP requests while the app is in the background**. You can change this in your `AdjustConfig` instance by calling the `setSendInBackground` method:
+
+```actionscript
+var appToken:String = "{YourAppToken}";
+var environment:String = Environment.SANDBOX;
+      
+var adjustConfig:AdjustConfig = new AdjustConfig(appToken, environment);
+
+adjustConfig.setSendInBackground(true);
+
+Adjust.start(adjustConfig);
+```
+
+If nothing is set, sending in background is **disabled by default**.
+
+### <a id="event-buffering"></a>Event buffering
+
+If your app makes heavy use of event tracking, you might want to delay some HTTP requests in order to send them in a single batch every minute. You can enable event buffering by calling the method `setEventBufferingEnabled` of the `AdjustConfig` instance with parameter `true`.
+
+```actionscript
+var appToken:String = "{YourAppToken}";
+var environment:String = Environment.SANDBOX;
+      
+var adjustConfig:AdjustConfig = new AdjustConfig(appToken, environment);
+
+adjustConfig.setEventBufferingEnabled(true);
+
+Adjust.start(adjustConfig);
+```
+
+If nothing set, event buffering is **disabled by default**.
+
+### <a id="offline-mode"></a>Offline mode
+
+You can put the Adjust SDK in offline mode to suspend transmission to our servers, while still retaining tracked data to be sent later. While in offline mode, all information is saved in a file, so be careful not to trigger too many events while in offline mode.
+
+You can activate offline mode by calling the method `setOfflineMode` of the `Adjust` instance with the parameter `true`.
+
+```actionscript
+Adjust.setOfflineMode(true);
+```
+
+Conversely, you can deactivate the offline mode by calling `setOfflineMode` with `false`. When the Adjust SDK is put back in online mode, all saved information is sent to our servers with the correct timstamps.
+
+Unlike disabling tracking, this setting is **not remembered between sessions**. This means that the SDK is in online mode whenever it is started, even if the app was terminated in offline mode.
+
+### <a id="disable-tracking"></a>Disable tracking
+
+You can disable the Adjust SDK from tracking by invoking the method `setEnabled` of the `Adjust` instance with the enabled parameter set as `false`. This setting is **remembered between sessions**, but it can only be activated after the first session.
+
+```actionscript
+Adjust.setEnabled(false);
+```
+
+You can verify if the Adjust SDK is currently active with the method `isEnabled` of the `Adjust` instance. It is always possible to activate the Adjust SDK by invoking `setEnabled` with the `enabled` parameter set to `true`.
+
+### <a id="gdpr-forget-me"></a>GDPR right to be forgotten
+
+In accordance with article 17 of the EU's General Data Protection Regulation (GDPR), you can notify Adjust when a user has exercised their right to be forgotten. Calling the following method will instruct the Adjust SDK to communicate the user's choice to be forgotten to the Adjust backend:
+
+```actionscript
+Adjust.gdprForgetMe();
+```
+
+Upon receiving this information, Adjust will erase the user's data and the Adjust SDK will stop tracking the user. No requests from this device will be sent to Adjust in the future.
+
 
 [dashboard]:    http://adjust.com
 [adjust.com]:   http://adjust.com
