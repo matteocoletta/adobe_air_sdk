@@ -44,7 +44,7 @@ This is the Adobe AIR SDK of Adjust™. You can read more about Adjust™ at [Ad
    * [Session parameters](#session-parameters)
       * [Session callback parameters](#session-callback-parameters)
       * [Session partner parameters](#session-partner-parameters)
-      * [Delay start](#delay-start)
+   * [Delay start](#delay-start)
 
 ### Additional Features
 
